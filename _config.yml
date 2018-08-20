@@ -6,7 +6,7 @@
 title: AceLand
 subtitle: 🏔️
 description: Personal Blog
-keywords: Notes, Thoughts
+keywords: Tech
 author: changzhiga
 language: en
 timezone:
@@ -15,7 +15,7 @@ timezone:
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: https://blog.changzhiga.xyz
 root: /
-permalink: :categories/:title/
+permalink: :title/
 permalink_defaults:
 
 # Directory
