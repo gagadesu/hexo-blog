@@ -1,52 +1,61 @@
 ---
-title: VPS 装配笔记
+title: VPS 的装配流
 date: 2018-08-13 23:31:58
-tags: VPS
-categories: Tech
-description: VPS Configuration
+tags: 
+    - VPS
+    - Ubuntu
+    - CentOS
+categories: TECH
+description: 介绍一台新开机的 VPS 在个人应用场景下的装配方法。
 ---
 
 # 准备
 
 ## 主机命名
 
-按照既定格式为 VPS 主机命名，约定格式为：
+约定格式为：
 
-**`主机商/平台名三位缩略字母 - 主机所在国家/城市名两位缩略字母 + 数字编号`**
+<span id="inline-yellow">主机名</span> = `主机商/平台名三位缩略字母 - 主机所在国家/城市名两位缩略字母 + 数字编号`
 
-如 Google Cloud Platform 为 `gcp`，GigsgigsCloud 为 `ggs`，Vultr 为 `vtr`，以此类推；地名如 Taiwan 为 `tw`，Tokyo 为 `tk`。故有 `gcp-tw`、`ggs-hk`、`vtr-nj1` 等，主机名全部使用小写。
+如 Google Cloud Platform 为`gcp`、GigsgigsCloud 为`ggs`、Vultr 为`vtr`、Bandwagon 为`bwg`，以此类推；地名如 Taiwan 为`tw`，Tokyo 为`tk`。
 
-考虑到部分主机商的 CentOS 和 Debian 有大大小小的问题，故操作系统首选 Ubuntu 最新版本，保守选择 Ubuntu 16.04 LTS（Xenial Xerus）。
+故有`gcp-tw`、`bwg-la`、`vtr-nj1`等，主机名全部使用小写。
 
-## 关键信息预存
+## 信息预存
 
-首先存储 IP 可以方便后续的使用。主机正常运行后，使用 LaunchBar 的 Snippets 存储 各个主机的外部 IP，以主机名的 **`首字母（重复则使用前两位） + 地名（数字编码）`** 共三或四位字母作为 Snippets 的快捷短语；如 `gtw`，`gghk`。
+可通过多种方法在本机存储主机的外部 IP：
 
-# 主机配置
+- 使用 LaunchBar 或 Alfred 等效率启动工具的 Snippets 存储各个主机的外部 IP，以 <span id="inline-yellow">主机名</span> 的`首字母（重复则使用前两位） + 地名（数字编码）`共三或四位字母作为 Snippets 的快捷短语：如`gtw`，`gghk`；
+
+- 在系统输入法或鼠须管中添加文本替换，快捷短语同上。
+
+------
+
+# 配置
+
+以下操作全部基于 Ubuntu 18.04 LTS。
 
 ## SSH
 
-- 生成公钥和私钥，必要时将公钥复制到主机的 SSH 添加处（`~/.ssh/authorized_keys`）：
+- 生成公钥和私钥，必要时手动复制到`~/.ssh/authorized_keys`：
 
     ```
     ssh-keygen -t rsa -f ~/.ssh/[[主机名]] -C [[用户名]]
     ```
 
     {% note info %}
-    `[[主机名]]` 按照前期命名填写，`[[用户名]]` 为 `changzhiga`
+    <span id="inline-yellow">主机名</span> 如上填写，此处 <span id="inline-green">用户名</span> 为 `teishikaa`
     {% endnote %}
 
     {% note warning %}
-    某些主机可能需要通过 `ssh-copy-id` 命令添加公钥：
+    某些主机可能需要通过`ssh-copy-id`命令添加公钥：
 
     {% code %}
     ssh-copy-id -i ~/.ssh/[[主机对应的公钥]] [[用户名]]@IP
     {% endcode %}
-
-    公钥文件后缀为 `.pub`，`[[用户名]]` 为 `changzhiga`
     {% endnote %}
 
-- 通过终端 SSH 登录 root 账户，使用 Auto Config 添加主机到 HyperApp。观察 HyperApp 的 Docker 状态是否异常，如异常则需考虑重新安装系统；一般情况下会显示无法找到 `docker` 命令，说明系统需要安装 Docker。同时在终端测试 `sudo` 和 `docker` 命令，进一步确认系统是否正常。
+- SSH 登录 root，使用 Auto Config 添加主机到 HyperApp，测试`sudo`和`docker`命令，确认系统是否正常。
 
     ```
     ssh root@IP
@@ -57,18 +66,16 @@ description: VPS Configuration
     ```
     adduser [[用户名]];
     usermod -aG sudo [[用户名]];
-    su - [[用户名]]
+    su [[用户名]]
     ```
 
-- 设置免密码登录
+- 设置本机免密码登录
 
-    往`~/.ssh/config`配置文件添加 ssh 服务器信息即可实现别名登录而无需记住用户名和 IP 地址：
+    往`~/.ssh/config`配置文件添加以下信息即可通过`ssh alias`登录：
 
     ```
     vim ~/.ssh/config
     ```
-
-    编辑如下：
 
     ```
     Host    alias   # 自定义别名
@@ -78,7 +85,7 @@ description: VPS Configuration
     IdentityFile    ~/.ssh/id_rsa   # 第一步生成的公钥文件对应的私钥文件
     ```
 
-    最终，只需要在 Terminal 输入`ssh alias`即可。
+    此时只需输入`ssh alias`即可登录；更进一步还可以在 zsh 新建别名，免输`ssh`而直接用`alias`登录，`alias`即 <span id="inline-yellow">主机名</span>。
 
 - 延长 SSH 会话超时时间
 
@@ -87,8 +94,6 @@ description: VPS Configuration
 	```
 	vim /etc/ssh/sshd_config
 	```
-
-	找到以下配置（默认被注释掉，需要取消注释）：
 
     ```
 	ClientAliveInterval 30
@@ -101,20 +106,18 @@ description: VPS Configuration
     **ClientAliveCountMax**：当心跳包发送失败时重试的次数，比如设置成了3，如果 Server 向 Client 连续发三次心跳包都失败了，就会断开这个 Session 连接。  
     {% endnote %}
 
-	修改完后重启 ssh 以使之生效：
+	重启 ssh 以使之生效：
 	
 	```
 	service ssh restart
 	```
 
     - 客户端配置
-
-    比起修改服务器端的配置，修改客户端更加容易一些。
     
     ```
     ~/.ssh/config
     ```
-    修改以下内容：  
+    修改以下内容：
     
     ```
     Host myhostshortcut
@@ -122,6 +125,24 @@ description: VPS Configuration
     User root
     ServerAliveInterval 30
     ServerAliveCountMax 3
+    ```
+
+## 安装 zsh 和 oh my zsh
+
+- zsh
+
+    ```
+    sudo apt-get install zsh
+    ```
+
+    ```
+    zsh --version
+    ```
+
+- oh my zsh
+
+    ```
+    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     ```
 
 ## 安装 Docker CE
@@ -278,19 +299,12 @@ sudo docker run hello-world
     tcp_bbr                20480  14
     {% endnote %}
 
-Install via HyperApp
+------
 
-## 一键脚本
-(stack)
+# 应用
 
-# 后期
+## Shadowsocks
 
-1. 使用 HyperApp 安装各种所需的 App。
+- 使用 HyperApp 安装 Love Bundle，端口为 443；
 
-2. 在 `~/.ssh/config` 中添加 SSH 登录的快捷短语，同 Snippets 的规则一致。
-
-3. Surge 中的节点命名规则为：
-
-    **`国旗 + 大写主机名`**
-    
-    如 `🇼🇸 GCP-TW`、`🇭🇰 GGS-HK`。
+- 将节点信息配置到 Surge，节点命名规则为 **`国旗 + 大写主机名`**，如 `🇼🇸 GCP-TW`、`🇭🇰 GGS-HK`。
