@@ -47,11 +47,24 @@
 .post-body p a{
   color: #0593d3;
   border-bottom: none;
-  border-bottom: 1px solid #0593d3;
+  border-bottom: 0px solid #0593d3;
   &:hover {
     color: #fc6423;
     border-bottom: none;
     border-bottom: 1px solid #fc6423;
+  }
+}
+
+a {
+  color: #d6d6d6;
+  text-decoration: none;
+  outline: none;
+  border-bottom: 0px solid #999;
+  word-wrap: break-word;
+  &:hover {
+    color: #0593d3;
+    border-bottom: none;
+    border-bottom: 0px solid #fc6423;
   }
 }
 
@@ -67,6 +80,7 @@ code {
 }
 
 pre {
+    color: #d6d6d6
     font-size: 14px !important;
     font-family: 'Dank Mono' !important;
 }
@@ -75,7 +89,6 @@ pre {
 .highlight, pre {
     margin: 5px 0;
     padding: 5px;
-    border-radius: 3px;
 }
 .highlight, code {
     border: 1px solid #d6d6d6;
@@ -176,5 +189,3 @@ color: #555555;
     font-size: 25px !important;
   font-family: 'IBM Plex Sans' !important;
 }
-
-// Code Font
