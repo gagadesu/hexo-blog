@@ -12,21 +12,22 @@ description: 介绍一台新开机的 VPS 在个人应用场景下的装配方�
 
 # 准备
 
-## 主机命名
+## 主机别名
 
 约定格式为：
 
-<span id="inline-yellow">主机名</span> = `主机商/平台名三位缩略字母 - 主机所在国家/城市名两位缩略字母 + 数字编号`
+<span id="inline-yellow">HOSTALIAS</span>
+= `主机商/平台名三位缩略字母 - 主机所在国家/城市名两位缩略字母 + 数字编号`
 
 如 Google Cloud Platform 为`gcp`、GigsgigsCloud 为`ggs`、Vultr 为`vtr`、Bandwagon 为`bwg`，以此类推；地名如 Taiwan 为`tw`，Tokyo 为`tk`。
 
-故有`gcp-tw`、`bwg-la`、`vtr-nj1`等，主机名全部使用小写。
+故有`gcp-tw`、`bwg-la`、`vtr-nj1`等，HOSTALIAS全部使用小写。
 
 ## 信息预存
 
 可通过多种方法在本机存储主机的外部 IP：
 
-- 使用 LaunchBar 或 Alfred 等效率启动工具的 Snippets 存储各个主机的外部 IP，以 <span id="inline-yellow">主机名</span> 的`首字母（重复则使用前两位） + 地名（数字编码）`共三或四位字母作为 Snippets 的快捷短语：如`gtw`，`gghk`；
+- 使用 LaunchBar 或 Alfred 等效率启动工具的 Snippets 存储各个主机的外部 IP，以 <span id="inline-yellow">HOSTALIAS</span> 的`首字母（重复则使用前两位） + 地名（数字编码）`共三或四位字母作为 Snippets 的快捷短语：如`gtw`，`gghk`；
 
 - 在系统输入法或鼠须管中添加文本替换，快捷短语同上。
 
@@ -41,18 +42,18 @@ description: 介绍一台新开机的 VPS 在个人应用场景下的装配方�
 - 生成公钥和私钥，必要时手动复制到`~/.ssh/authorized_keys`：
 
     ```
-    ssh-keygen -t rsa -f ~/.ssh/[[主机名]] -C [[用户名]]
+    ssh-keygen -t rsa -f ~/.ssh/HOSTALIAS -C USERNAME
     ```
 
     {% note info %}
-    <span id="inline-yellow">主机名</span> 如上填写，此处 <span id="inline-green">用户名</span> 为 `teishikaa`
+    <span id="inline-yellow">HOSTALIAS</span> 如上填写，此处 <span id="inline-green">USERNAME</span> 为 `teishikaa`
     {% endnote %}
 
     {% note warning %}
     某些主机可能需要通过`ssh-copy-id`命令添加公钥：
 
     {% code %}
-    ssh-copy-id -i ~/.ssh/[[主机对应的公钥]] [[用户名]]@IP
+    ssh-copy-id -i ~/.ssh/HOSTALIAS.pub USERNAME@IP
     {% endcode %}
     {% endnote %}
 
@@ -65,9 +66,9 @@ description: 介绍一台新开机的 VPS 在个人应用场景下的装配方�
 - 确认系统正常后，在 root 账户下添加自定义用户并为其赋予 root 权限：
 
     ```
-    adduser [[用户名]];
-    usermod -aG sudo [[用户名]];
-    su [[用户名]]
+    adduser USERNAME;
+    usermod -aG sudo USERNAME;
+    su USERNAME
     ```
 
 - 设置本机免密码登录
@@ -82,11 +83,11 @@ description: 介绍一台新开机的 VPS 在个人应用场景下的装配方�
     Host    alias   # 自定义别名
     HostName    hostname    # ssh 服务器的 IP 或域名
     Port    22  # ssh 服务器的端口，默认为22
-    User    root    # ssh 服务器用户名
+    User    root    # ssh 服务器USERNAME
     IdentityFile    ~/.ssh/id_rsa   # 第一步生成的公钥文件对应的私钥文件
     ```
 
-    此时只需输入`ssh alias`即可登录；更进一步还可以在 zsh 新建别名，免输`ssh`而直接用`alias`登录，`alias`即 <span id="inline-yellow">主机名</span>。
+    此时只需输入`ssh alias`即可登录；更进一步还可以在 zsh 新建别名，免输`ssh`而直接用`alias`登录，`alias`即 <span id="inline-yellow">HOSTALIAS</span>。
 
 - 延长 SSH 会话超时时间
 
@@ -308,4 +309,4 @@ sudo docker run hello-world
 
 - 使用 HyperApp 安装 Love Bundle，端口为 443；
 
-- 将节点信息配置到 Surge，节点命名规则为 **`国旗 + 大写主机名`**，如 `🇼🇸 GCP-TW`、`🇭🇰 GGS-HK`。
+- 将节点信息配置到 Surge，节点命名规则为 **`国旗 + 大写HOSTALIAS`**，如 `🇼🇸 GCP-TW`、`🇭🇰 GGS-HK`。
