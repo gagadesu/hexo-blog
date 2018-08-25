@@ -261,6 +261,41 @@ sudo rm default
 sudo ln -s ../sites-available/ttrss ttrss
 ```
 
+### 自动更新 SSL 证书
+
+Let’s Encrypt 提供的证书只有90天的有效期，因此必须在证书到期之前重新获取这些证书，可通过`certbot renew`命令来操作：
+
+```
+certbot renew --dry-run
+```
+
+由于通过`--standalone`模式获取证书需要启用`443`端口，而`Nginx`在运行中占用了`443`端口，因此会报以下错误：
+
+{% note danger %}
+Attempting to renew cert from 
+/etc/letsencrypt/renewal/api.diamondfsd.com.conf produced an unexpected error: At least one of the required ports is already taken.. Skipping.
+{% endnote %}
+
+在 Linux 上可借助`cron`完成定时自动更新 SSL 证书的操作：
+
+- 新建`certbot-auto-renew-cron`
+
+    ```
+    15 2 * */2 * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx start"
+    ```
+
+    {% note info %}
+    `15 2 * */2 *`：每隔 两个月的 凌晨 2:15 执行 更新操作；
+    `--pre-hook`：执行更新操作之前先停止`Nginx`服务；
+    `--post-hook`：更新完成后重新启动`Nginx`服务。
+    {% endnote %}
+
+- 启动定时任务
+
+    ```
+    crontab certbot-auto-renew-cron
+    ```
+
 ## 配置优化
 
 ### 安装 Feedly 主题
@@ -286,7 +321,7 @@ unzip master.zip
 sudo docker ps
 ```
 
-![](http://pa5j6ydpq.bkt.clouddn.com/20180818165044_w53LBz_15091878055188.jpeg)
+![](http://pa5j6ydpq.bkt.clouddn.com/20180825153607_88JIrC_Screenshot.jpeg)
 
 将主题配置文件复制到容器相应的路径中：
 ```
