@@ -164,7 +164,7 @@ sudo docker run -d --link ttrssdb:db -p 8080:80 -e SELF_URL_PATH=http://[[IP_ADD
 
 ---
 
-## Nginx
+## 开启 HTTPS
 
 ### 安装 Certbot 并获取证书
 
