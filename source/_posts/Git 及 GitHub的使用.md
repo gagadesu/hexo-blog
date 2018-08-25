@@ -5,6 +5,7 @@ tags:
     - Git
     - GitHub
 categories: TECH
+permalink: git-and-github
 description: Git 及 GitHub 的基本使用方法
 ---
 

@@ -6,6 +6,7 @@ tags:
     - Ubuntu
     - CentOS
 categories: TECH
+permalink: vps
 description: 介绍一台新开机的 VPS 在个人应用场景下的装配方法。
 ---
 

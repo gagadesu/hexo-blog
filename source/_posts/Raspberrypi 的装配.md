@@ -1,8 +1,9 @@
 ---
-title: Raspberrypi 装配笔记
+title: Raspberrypi 的装配
 date: 2018-08-13 02:07:40
 tags: Raspberrypi
 categories: TECH
+permalink: raspberrypi
 description: Raspberrypi Configuration
 ---
 

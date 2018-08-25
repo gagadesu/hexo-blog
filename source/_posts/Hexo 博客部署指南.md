@@ -6,6 +6,7 @@ tags:
     - GitHub Pages
     - Netlify
 categories: BLOG
+permalink: hexo-blog-deployment
 description: 在 GitHub Pages 和 Netlify 上部署 Hexo 博客的方法
 ---
 
@@ -40,7 +41,7 @@ hexo g
 ```
 hexo s --debug
 ```
-打开浏览器访问`http://localhost:4000`即可预览博客内容，<kbd>⌃</kbd><kbd>C</kbd>停止本地预览。
+打开浏览器访问`http://localhost:4000`即可预览博客内容，<kbd>⌃</kbd><kbd>C</kbd> 停止本地预览。
 
 ## 新建文章
 

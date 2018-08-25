@@ -3,6 +3,7 @@ title: ttRSS 的搭建
 date: 2018-08-14 02:01:52
 tags: ttrss
 categories: TECH
+permalink: ttrss
 description: ttRSS 搭建指南
 ---
 

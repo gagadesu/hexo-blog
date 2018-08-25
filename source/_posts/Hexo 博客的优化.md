@@ -5,6 +5,7 @@ tags:
   - Hexo
   - NexT
 categories: BLOG
+permalink: the-customization-of-hexo-blog
 description: 自定义 Hexo 博客的配置以优化阅读和写作体验
 ---
 
