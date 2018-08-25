@@ -2,28 +2,15 @@
 title: Raspberrypi 装配笔记
 date: 2018-08-13 02:07:40
 tags: Raspberrypi
-categories: Tech
+categories: TECH
 description: Raspberrypi Configuration
 ---
 
-## 镜像烧制
+# 镜像烧制
 
-1. 从树莓派官网下载最新的 Raspbian 系统镜像，通过 Etcher 烧录进 TF 卡中；如果不使用最新的 Debian 系统，可以烧录硬盘备份的 Debian Jessie 镜像。
+1. 从[树莓派官网](https://www.raspberrypi.org/downloads/raspbian/)下载最新的 Raspbian 系统镜像，通过 Etcher 烧录进 TF 卡中；如果不使用最新的 Debian 系统，可以烧录[Debian Jessie](https://www.dropbox.com/s/y5vsffe57aa680e/2017-07-05-raspbian-jessie.zip?dl=0)。
 
-2. 烧制完成后，进入系统根目录`boot`，新建无后缀的空脚本文件`ssh`，再新建名为`wpa_supplicant.conf` 的无线网络配置文件，其内容如下：
-
-    ```
-    country=CN
-    ctrl_interface=DIR=/var/run/wpa_supplicant
-    GROUP=netdev
-    update_config=1
-    network={
-        ssid="[[Wi-Fi 名称]]"
-        psk="[[Wi-Fi 密码]]"
-        key_mgmt=WPA-PSK
-        priority=1
-    }
-    ```
+2. 烧制完成后，进入系统根目录`boot`，新建无后缀的空脚本文件`ssh`。
 
 3. 完成以上步骤之后，即可拔出 TF 卡，将其插入树莓派中，接通电源，等待其自动连接上局域网。
 
@@ -41,13 +28,18 @@ passwd pi
     
 ### Samba
 
-修改系统软件源为阿里云：
+修改系统软件源：
 
 ```
 sudo nano /etc/apt/sources.list
 ```
 
-将 deb 后的 URL 修改为 http://mirrors.aliyun.com/raspbian/raspbian/。
+将其修改为[清华大学](https://mirror.tuna.tsinghua.edu.cn/help/raspbian/)等国内源：
+
+```
+deb http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ stretch main non-free contrib
+deb-src http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ stretch main non-free contrib
+```
        
 * 刷新软件列表：
 

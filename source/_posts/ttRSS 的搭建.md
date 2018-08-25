@@ -1,8 +1,8 @@
 ---
 title: ttRSS 的搭建
 date: 2018-08-14 02:01:52
-tags: TTRSS
-categories: Tech
+tags: ttrss
+categories: TECH
 description: ttRSS 搭建指南
 ---
 
@@ -123,6 +123,20 @@ sudo docker run hello-world
 
 ---
 
+## 安装 Docker Compose
+
+```
+sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+```
+
+```
+chmod +x /usr/local/bin/docker-compose
+```
+
+```
+docker-compose --version
+```
+
 ## 安装镜像并运行容器
 
 ### PostgreSQL[^1]
@@ -149,13 +163,113 @@ sudo docker run -d --link ttrssdb:db -p 8080:80 -e SELF_URL_PATH=http://[[IP_ADD
 
 ---
 
+## Nginx
+
+### 安装 Certbot 并获取证书
+
+```
+sudo apt-get install certbot
+```
+
+```
+sudo certbot certonly --standalone -d example.com
+```
+
+{% note success %}
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/example.com/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/example.com/privkey.pem
+   Your cert will expire on 2018-11-22. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot
+   again. To non-interactively renew *all* of your certificates, run
+   "certbot renew"
+ - Your account credentials have been saved in your Certbot
+   configuration directory at /etc/letsencrypt. You should make a
+   secure backup of this folder now. This configuration directory will
+   also contain certificates and private keys obtained by Certbot so
+   making regular backups of this folder is ideal.
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+{% endnote %}
+
+### Nginx
+
+```
+sudo apt-get install nginx
+```
+
+```
+cd /etc/nginx/sites-available
+sudo nano ttrss
+```
+
+编辑如下：
+
+```
+upstream ttrssdev {
+  server 127.0.0.1:181;
+}
+
+server {
+    listen 80;
+    server_name  ttrss.changzhiga.xyz;
+    return 301 https://ttrss.changzhiga.xyz$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    gzip on;
+    server_name  ttrss.changzhiga.xyz;
+
+    ssl_certificate /etc/letsencrypt/live/vps.changzhiga.xyz/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/vps.changzhiga.xyz/privkey.pem;
+
+    access_log /var/log/nginx/ttrssdev_access.log combined;
+    error_log  /var/log/nginx/ttrssdev_error.log;
+
+    location / {
+        proxy_redirect off;
+        proxy_pass http://ttrssdev;
+
+        proxy_set_header  Host                $http_host;
+        proxy_set_header  X-Real-IP           $remote_addr;
+        proxy_set_header  X-Forwarded-Ssl     on;
+        proxy_set_header  X-Forwarded-For     $proxy_add_x_forwarded_for;
+        proxy_set_header  X-Forwarded-Proto   $scheme;
+        proxy_set_header  X-Frame-Options     SAMEORIGIN;
+
+        client_max_body_size        100m;
+        client_body_buffer_size     128k;
+
+        proxy_buffer_size           4k;
+        proxy_buffers               4 32k;
+        proxy_busy_buffers_size     64k;
+        proxy_temp_file_write_size  64k;
+    }
+}
+```
+
+实际上配置文件应该放在`sites-enabled`目录下才能生效，因此可以将`sites-available`目录中的配置文件软链接到`sites-enabled`目录。
+
+```
+cd /etc/nginx/sites-enabled
+sudo rm default
+sudo ln -s ../sites-available/ttrss ttrss
+```
+
 ## 配置优化
 
 ### 安装 Feedly 主题
 
 下载主题文件并解压到主目录：
 
-<a id="download" href="https://www.dropbox.com/s/88olyj3dsmmr23t/tt-rss-feedly-theme-1.3.0-for-ttrss-17.4.0.zip"><i class="fa fa-download"></i><span> Feedly 主题</span> </a>
+```
+wget https://raw.github.com/changzhiga/docker-ttrss/master/tt-rss-feedly-theme-1.3.0-for-ttrss-17.4.0.zip
+```
 
 若未安装解压工具，可先安装`unzip`：
 ```
@@ -167,7 +281,7 @@ unzip master.zip
 ```
 
 
-查看当前 Docker 容器列表，找到`IMAGE`一列为 `[[fischerman/docker-ttrss]]` 的记录，复制其 `[[CONTAINER ID]]`：
+查看当前 Docker 容器列表，找到`IMAGE`一列为 `[[fischerman/docker-ttrss]]` 的记录，复制其 `CONTAINER_ID`：
 ```
 sudo docker ps
 ```
@@ -176,11 +290,11 @@ sudo docker ps
 
 将主题配置文件复制到容器相应的路径中：
 ```
-sudo docker cp tt-rss-feedly-theme-master/feedly.css [[CONTAINER ID]]:/var/www/themes
+sudo docker cp tt-rss-feedly-theme-master/feedly.css CONTAINER_ID:/var/www/themes
 ```
 
 ```
-sudo docker cp tt-rss-feedly-theme-master/feedly [[CONTAINER ID]]:/var/www/themes
+sudo docker cp tt-rss-feedly-theme-master/feedly CONTAINER_ID:/var/www/themes
 ```
 
 <br />
@@ -192,7 +306,7 @@ git clone https://github.com/WangQiru/mercury_fulltext.git
 ```
 
 ```
-sudo docker cp mercury_fulltext [[CONTAINER ID]]:/var/www/plugins
+sudo docker cp mercury_fulltext CONTAINER_ID:/var/www/plugins
 ```
 
 注册 Mercury 并复制 [Mercury Web Parser API Key](https://mercury.postlight.com/web-parser/)，在 RSS 设置中配置 mercury_fulltext 插件。
@@ -201,15 +315,20 @@ sudo docker cp mercury_fulltext [[CONTAINER ID]]:/var/www/plugins
 
 ### 模拟 Fever
 
+(fever 插件目前遇到了bug，等待解决)
+
 ```git
 git clone https://github.com/rannen/tinytinyrss-fever-plugin.git
 ```
 
 ```
-sudo docker cp ~/tinytinyrss-fever-plugin/fever [[CONTAINER ID]]:/var/www/plugins
+sudo docker cp ~/tinytinyrss-fever-plugin/fever CONTAINER_ID:/var/www/plugins
 ```
 
 在设置页面启用名为`fever`的插件；保存后，再次进入设置，选项卡下会多出一个名为`Fever Emulation`的板块；在该板块的文本框中，设置一个专用于该插件的密码，保存；文本框下方为服务器地址`http://rss.example.org/plugins/fever/`。
 
 在 Reeder 中，在添加 RSS 账号时选择 Fever，在服务器地址栏填入上述地址，用户名填写`admin`，密码为以上设定的密码。
+
+完成以上改动后，`docker commit CONTAINER_ID`保存变动。
+
 [^1]: 此镜像已预先配置完成以直接配合 RSS 镜像使用的数据库环境。

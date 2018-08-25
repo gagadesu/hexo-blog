@@ -2,7 +2,7 @@
 title: 下载任意版本的 iOS App
 date: 2018-08-14 02:15:37
 tags: iOS
-categories: Tech
+categories: TECH
 description: 在 iTunes 上下载任意版本的 iOS App
 ---
 

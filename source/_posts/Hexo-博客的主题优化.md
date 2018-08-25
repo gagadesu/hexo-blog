@@ -4,7 +4,7 @@ date: 2018-08-16 01:30:17
 tags: 
   - Hexo
   - NexT
-categories: Blog
+categories: BLOG
 description: 自定义 Hexo 博客的配置以优化阅读和写作体验
 ---
 
