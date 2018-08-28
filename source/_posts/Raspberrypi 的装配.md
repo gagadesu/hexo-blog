@@ -9,25 +9,25 @@ description: Raspberrypi Configuration
 
 # 镜像烧制
 
-1. 从[树莓派官网](https://www.raspberrypi.org/downloads/raspbian/)下载最新的 Raspbian 系统镜像，通过 Etcher 烧录进 TF 卡中；如果不使用最新的 Debian 系统，可以烧录[Debian Jessie](https://www.dropbox.com/s/y5vsffe57aa680e/2017-07-05-raspbian-jessie.zip?dl=0)。
+- 从[树莓派官网](https://www.raspberrypi.org/downloads/raspbian/)下载最新的 Raspbian 系统镜像，通过 Etcher 烧录进 TF 卡中；如果不使用最新的 Debian 系统，可以烧录[Debian Jessie](https://www.dropbox.com/s/y5vsffe57aa680e/2017-07-05-raspbian-jessie.zip?dl=0)。
 
-2. 烧制完成后，进入系统根目录`boot`，新建无后缀的空脚本文件`ssh`。
+- 烧制完成后，进入系统根目录`boot`，新建无后缀的空脚本文件`ssh`。
 
-3. 完成以上步骤之后，即可拔出 TF 卡，将其插入树莓派中，接通电源，等待其自动连接上局域网。
+- 完成以上步骤之后，即可拔出 TF 卡，将其插入树莓派中，接通电源，等待其自动连接上局域网。
 
-## 基础配置
+# 基础配置
 
-### SSH 连接
+## SSH 连接
 
 在终端输入`ssh pi@192.168.X.X`，初始密码为`raspberry`。亦可参照 VPS 配置 SSH 的做法生成公钥和私钥来创建快捷短语。
     
-### 修改管理员密码
+## 修改管理员密码
 
 ```
 passwd pi
 ```
     
-### Samba
+## Samba
 
 修改系统软件源：
 
@@ -92,11 +92,14 @@ sudo /etc/init.d/samba restart
 sudo smbpasswd -a pi
 ```
 
-## 功能配置
+------
 
-### Homebridge
+# 功能配置
+
+## Homebridge
 
 项目地址：
+
 * [Homebridge](https://github.com/nfarina/homebridge)
 
 * [Homebridge-Mi-Aqara](https://github.com/YinHangCode/homebridge-mi-aqara)
@@ -209,4 +212,4 @@ sudo smbpasswd -a pi
     sudo apt-get install screen
     ```
 
-安装完后，运行 `screen -S homebdg`，在窗口里运行 Homebridge。
+    运行 `screen -S homebdg`，在窗口里运行 Homebridge。

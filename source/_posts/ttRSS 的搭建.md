@@ -7,7 +7,7 @@ permalink: ttrss
 description: ttRSS 搭建指南
 ---
 
-## 安装 Docker CE
+# 安装 Docker CE
 
 {% tabs Install Docker CE %}
 <!-- tab Ubuntu@linux -->
@@ -122,9 +122,9 @@ sudo docker run hello-world
 <!-- endtab -->
 {% endtabs %}
 
----
+------
 
-## 安装 Docker Compose
+# 安装 Docker Compose
 
 ```
 sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
@@ -138,16 +138,18 @@ chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 ```
 
-## 安装镜像并运行容器
+------
 
-### PostgreSQL[^1]
+# 安装镜像并运行容器
+
+## PostgreSQL[^1]
 
 ```
 sudo docker pull nornagon/postgres;
 sudo docker run -d --name ttrssdb nornagon/postgres
 ```
 
-### ttRSS
+## ttRSS
 ```
 sudo docker pull fischerman/docker-ttrss
 ```
@@ -162,11 +164,11 @@ sudo docker run -d --link ttrssdb:db -p 8080:80 -e SELF_URL_PATH=http://[[IP_ADD
 `-e SELF_URL_PATH=http://[[IP_ADDRESS]]:8080`：该参数表明，该 ttRSS 应用将可从`http://[[IP_ADDRESS]]:8080` 访问。
 {% endnote %}
 
----
+------
 
-## 开启 HTTPS
+# 开启 HTTPS
 
-### 安装 Certbot 并获取证书
+## 安装 Certbot 并获取证书
 
 ```
 sudo apt-get install certbot
@@ -197,7 +199,7 @@ IMPORTANT NOTES:
    Donating to EFF:                    https://eff.org/donate-le
 {% endnote %}
 
-### Nginx
+## Nginx
 
 ```
 sudo apt-get install nginx
@@ -262,7 +264,7 @@ sudo rm default
 sudo ln -s ../sites-available/ttrss ttrss
 ```
 
-### 自动更新 SSL 证书
+## 自动更新 SSL 证书
 
 Let’s Encrypt 提供的证书只有90天的有效期，因此必须在证书到期之前重新获取这些证书，可通过`certbot renew`命令来操作：
 
@@ -297,9 +299,11 @@ Attempting to renew cert from
     crontab certbot-auto-renew-cron
     ```
 
-## 配置优化
+------
 
-### 安装 Feedly 主题
+# 配置优化
+
+## 安装 Feedly 主题
 
 下载主题文件并解压到主目录：
 
@@ -335,7 +339,7 @@ sudo docker cp tt-rss-feedly-theme-master/feedly CONTAINER_ID:/var/www/themes
 
 <br />
 
-### 配置全文输出
+## 配置全文输出
 
 ```git
 git clone https://github.com/WangQiru/mercury_fulltext.git
@@ -349,7 +353,7 @@ sudo docker cp mercury_fulltext CONTAINER_ID:/var/www/plugins
 
 <br />
 
-### 模拟 Fever
+## 模拟 Fever
 
 (fever 插件目前遇到了bug，等待解决)
 
