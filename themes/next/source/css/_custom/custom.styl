@@ -1,6 +1,6 @@
-// 代码块复制按钮
+// Copy Button
 .highlight{
-  // 方便copy代码按钮（btn-copy）的定位
+  // For btn-copy Locating
   position: relative;
 }
 .btn-copy {
@@ -35,7 +35,7 @@
   opacity: 1;
 }
 
-// 圆形头像
+// Round Avatar
 .site-author-image {
     border-radius: 50%;
     -webkit-border-radius: 50%;
@@ -43,7 +43,7 @@
     transition: 1.4s all;
 }
 
-// 文章内链接文本样式
+// Inline Link Style
 .post-body p a{
   color: #0593d3;
   border-bottom: none;
@@ -68,7 +68,7 @@ pre a {
   }
 }
 
-// Block styles
+// Block Style
 @font-face {
     font-family: Dank Mono;
     src: url('/fonts/DankMono-Regular.ttf');
@@ -85,7 +85,7 @@ pre {
     font-family: 'Dank Mono' !important;
 }
 
-// Margin styles
+// Margin Style
 .highlight, pre {
     margin: 5px 0;
     padding: 5px;
@@ -95,7 +95,7 @@ pre {
     border-radius: 3px;
 }
 
-// 主页文章添加阴影效果
+// Shadows at Homepage
 .post {
    margin-top: 0px;
    margin-bottom: 60px;
@@ -189,3 +189,14 @@ color: #555555;
     font-size: 25px !important;
   font-family: 'IBM Plex Sans' !important;
 }
+
+// `diff` Style in Block Code
+pre .addition {
+    background: #006600FF;
+    border-radius: 3px;
+}
+pre .deletion {
+    background: #993399FF;
+    border-radius: 3px
+}
+

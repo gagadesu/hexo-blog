@@ -9,7 +9,7 @@ description: Raspberrypi Configuration
 
 # 镜像烧制
 
-- 从[树莓派官网](https://www.raspberrypi.org/downloads/raspbian/)下载最新的 Raspbian 系统镜像，通过 Etcher 烧录进 TF 卡中；如果不使用最新的 Debian 系统，可以烧录[Debian Jessie](https://www.dropbox.com/s/y5vsffe57aa680e/2017-07-05-raspbian-jessie.zip?dl=0)。
+- 从[树莓派官网](https://www.raspberrypi.org/downloads/raspbian/)下载最新的 Raspbian 系统镜像，通过 Etcher 烧录进 TF 卡中；如果不使用最新的 Debian 系统，可以烧录 [Raspbian Jessie](https://www.dropbox.com/s/y5vsffe57aa680e/2017-07-05-raspbian-jessie.zip?dl=0)。
 
 - 烧制完成后，进入系统根目录`boot`，新建无后缀的空脚本文件`ssh`。
 
@@ -94,7 +94,7 @@ sudo smbpasswd -a pi
 
 ------
 
-# 功能配置
+# 应用配置
 
 ## Homebridge
 
@@ -213,3 +213,145 @@ sudo smbpasswd -a pi
     ```
 
     运行 `screen -S homebdg`，在窗口里运行 Homebridge。
+
+## Plex
+
+### 安装 Plex
+
+1. 更新 Raspbian：
+
+    ```
+    sudo apt-get update \
+    sudo apt-get upgrade \
+    sudo apt-get dist-upgrade
+    ```
+
+2. 重启树莓派：
+
+    ```
+    sudo reboot
+    ```
+
+3. 添加 Https 存储库功能：
+
+    ```
+    sudo apt-get install apt-transport-https
+    ```
+
+4. 添加 Plex Media Server 存储库：
+
+    ```
+    echo "deb https://dev2day.de/pms/ jessie main" | sudo tee /etc/apt/sources.list.d/pms.list
+    ```
+
+5. 为存储库添加 GPG 密钥：
+
+    ```
+    cd /tmp;
+    wget https://dev2day.de/pms/dev2day-pms.gpg.key;
+    ls;
+    sudo apt-key add dev2day-pms.gpg.key
+    ```
+
+6. 回到根目录并更新源：
+
+    ```
+    cd ~ \
+    sudo apt-get update
+    ```
+
+7. 安装 Plex Media Server：
+
+    ```
+    sudo apt-get install plexmediaserver-installer
+    ```
+
+8. 编辑配置文件：
+
+    ```
+    sudo nano /etc/default/plexmediaserver.prev
+    ```
+
+    修改如下：
+
+    ```diff
+    - PLEX_MEDIA_SERVER_USER=plex
+    + PLEX_MEDIA_SERVER_USER=pi
+    ```
+
+9. 重启 Plex，重启树莓派：
+
+    ```
+    systemctl restart plexmediaserver;
+    systemctl status plexmediaserver;
+    sudo reboot
+    ```
+
+### 挂载外置硬盘
+
+1. 查看硬盘安装位置：
+
+    ```
+    sudo cat /proc/mounts
+    ```
+
+2. 安装 NTFS 驱动器：
+
+    ```
+    sudo apt-get install ntfs-3g
+    ```
+
+3. 查询硬盘的`UUID`：
+
+    ```
+    ls -l /dev/disk/by-uuid
+    ```
+
+4. 创建新目录挂载硬盘：
+
+    ```
+    sudo mkdir /media/usb
+    ```
+
+5. 查询硬盘的`UID`和`GID`：
+
+    ```
+    id -u pi;
+    id -g pi
+    ```
+
+6. 编辑`fstab`文件（用于设置驱动器）：
+
+    ```
+    sudo nano /etc/fstab
+    ```
+
+    最后一行按如下格式编辑：
+
+    `UUID=[UUID] /media/usb auto nofail,uid=[UID],gid=[GID],noatime 0 0`
+
+7. 弹出硬盘并重新挂载，重启树莓派：
+
+    ```
+    sudo umount [硬盘路径];
+    sudo mount -a
+    ```
+
+    ```
+    sudo reboot
+    ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
